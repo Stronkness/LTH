@@ -1,0 +1,18 @@
+I6:
+
+Case a illustrates the concept(s);
+busy-wait
+
+Case b illustrates the concept(s);
+race condition - programmet låter igenom trådar för den kollar inte om någon segment är upptagen,
+de resterande rörde sig snabbare (dator kraschar kan ej speeda upp)
+
+Case c illustrates the concept(s);
+race condition - om man har while och en tråd kommer tillbaka från sin queue kommer tråden
+dubbelkolla while-condition så att det stämmer, har du if kommer alla trådar som kallas till från
+sin queue att köras. 
+
+Case d illustrates the concept(s);
+deadlock - det beror på route, eftersom de flesta korsningarna är på en längd på 4 tåglängder 
+(även gränsen för hur stora de kan va) så kommer de tillslut krocka med varandra och 
+skapa deadlock då de väntar på varandra och sig själv att få köra vidare
