@@ -1,0 +1,14 @@
+• What is the time complexity, and more importantly why?
+-- O(nlogn), det beror på att vi utför divide and conquer vilket har just den tidskomplexiteten, att den delar upp
+-- i mindre listor och kollar i listorna efter det vi är ute efter
+
+• Why is it sufficient to check a few points along the mid line?
+-- För den kortaste distansen för ett par kan vara mellan mittenlinjen, vi kollar enbart den vänstar och högra
+-- sidan av mittenlinjen vilket gör att om vi inte tittar på punkterna nörmst mittlinjen kan vi tappa bort det
+-- kortaste avståndet, antal squares att kolla bestäms utav C-konstanten
+
+• Draw a picture and show/describe when each distance is checked in your solution!
+-- SE PAINT
+
+• When do you break the recursion and use brute force?
+-- När vi hittade den minsta distansen på vänstra och högra sidan av mittlinjen
