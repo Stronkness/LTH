@@ -1,0 +1,16 @@
+Why does the algorithm you have implemented produce a minimal spanning tree?
+-- Osäkert
+-- Men ett spanning tree är ett träd som kopplar samman alla noder med varandra, minimal spanning tree gör det
+-- med åtanken att ta minimal kostnad som vägen
+
+What is the time complexity, and more importantly why?
+-- O(E log E), pga den mest tidskrävande operationen är sorteringen av edges
+
+What happens if one of the edges you have chosen to include collapses? Might there be any problems with that
+in real applications?
+-- Gäller att hitta en ny väg som inte skapar en cykel då MST söker efter den minimala vägen, en bättre minimal
+väg kan uppstå vid kollaps av en nod
+
+Can you think of any real applications of MST? What would the requirements of a problem need to be in order
+for us to want MST as a solution?
+-- Inom nätverk, hitta snabbaste vägen
