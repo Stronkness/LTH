@@ -1,0 +1,72 @@
+
+Release <v1.0> of <team-12>.
+Date: 2021-02-22
+
+
+New stories in this release:
+ - G2: Hantera Klasser
+ - G7: Formaterat Resultat
+ - V1: Varvlopp
+ - V2: Flera ska registera måltider
+ - V3: Masstart
+ - V5: Sorterad resultatlista
+ - G8-1: Sorterat Resultat Maraton
+ - G12 & G13: Teknisk Dokumentation
+
+
+
+All stories included:
+ - M1: Enkel Resultatlista
+ - M2: Personuppgifter
+ - M3: Totaltid
+ - M4: Felhantering
+ - M5: GUI för registrering
+ - M6: Registrering
+ - G1: Skitig nummerplåt
+ - G2: Hantera Klasser
+ - G3: Manualer/instruktioner
+ - G4: Hantera registreringar med otillåtna startnummer
+ - G5: Minimitid
+ - G6: Stöd för konfiguration
+ - G7: Formaterat Resultat
+ - G8-1: Sorterat Resultat Maraton
+ - G12 & G13: Teknisk Dokumentation
+ - V1: Varvlopp
+ - V2: Flera ska registera måltider
+ - V3: Masstart
+ - V5: Sorterad resultatlista
+
+Zip folder included:
+ - Docs folder: Innehåller Manual vilket är en pdf med instruktioner och material angående de två programmen och projektet, teknisk dokumentation i pdf form och en README fil som vägleder i projektets filstruktur.
+ - Acceptanstester folder: Innehåller färdiga acceptanstester av alla stories för användning under release, alla kategoriserade för olika stories.
+ - register.jar: Är register programmet som kan användas för att registrera start/måltider för att sedan sparas på fil.
+ - result.jar: Är result programmet som kan användas för att generera resultatet tillsammans med namnfil,starttider och måltider.
+ - release-info: Beskriver alla stories och filer som levereras i nuvarande release.
+ - configfile.json: Är Konfigurationsfilen som används för result.jar programmet, alla ändringar för konfigurationer görs där.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                DIAMOND HANDED DEVS
+
+
+
+                           *     .--.
+                                / /  `
+               +               | |
+                      '         \ \__,
+                  *          +   '--'  *
+                      +   /\
+         +              .'  '.   *
+                *      /======\      +
+                      ;:.  _   ;
+                      |:. (_)  |
+                      |:.  _   |
+            +         |:. (_)  |          *
+                      ;:.      ;
+                    .' \:.    / `.
+                   / .-'':._.'`-. \
+                   |/    /||\    \|
+             jgs _..--"""````"""--.._
+           _.-'``                    ``'-._
+         -'                                '-
+
