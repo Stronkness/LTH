@@ -1,9 +1,0 @@
-
-rootProject.name = 'race-clock'
-
-gradle.ext.version = ''
-gradle.ext.devName = 'The Shady Devs'
-
-include 'register'
-include 'result'
-
