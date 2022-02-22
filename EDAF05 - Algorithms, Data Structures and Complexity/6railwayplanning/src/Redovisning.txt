@@ -1,0 +1,14 @@
+• What is the time complexity, and more importantly why?
+-- BFS är O(V + E) men då vi vet att m > n kan vi skriva O(n+m) som O(m + m) = O(2m) = O(m).
+Om vi tänker att det utgående flödet från vår första nod är C, och vi i värsta fall hittar en
+ny väg och ökar flödet med 1 varje gång, då kommer vi få som värst att vi ökar flödet C gånger,
+vilket ger C stycken BFS alltså O(C*M)
+
+• Which other (well-known) algorithmic problems can be solved using Network-Flow?
+-- Multi-source, multi-sink maximum flow. Ska ta ut det maximala flödet i en graf
+
+• If the capacities of the edges are very large, how can one get a different (better) time complexity?
+-- Istället för att ta bort noder så lägger vi till dom och bygger en större och större graf.
+
+
+Sidenotes:
