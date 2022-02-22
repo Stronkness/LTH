@@ -1,0 +1,16 @@
+Needleman–Wunsch algorithm
+
+Is your solution recursive or iterative?
+-- Iterativ
+
+• What is the time complexity, and more importantly why?
+-- O(mn), detta för att vi får in två sekvenser av längden m och n som vi använder oss utav
+
+• What would the time complexity of a recursive solution without cache be?
+-- Högre då ingen memoization har skett, men kan inte besvara det på rak arm
+
+• Can you think of any applications of this type of string alignment?
+-- Vid sequence alignment av DNA strängar i bioinformatiken när man ska justera protein eller nukleotider sekvenser
+
+• What could the costs represent in the applications?
+-- Kostanden för att lägga till ett protein eller nukleotid i sekvensen kanske?
