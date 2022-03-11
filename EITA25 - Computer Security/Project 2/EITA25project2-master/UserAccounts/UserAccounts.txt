@@ -1,0 +1,11 @@
+Name; Division
+malin; ortopedi
+eva; ortopedi
+sven; ortopedi
+anna; hjärta
+kim; hjärta
+maria; hjärta
+fredrik; hjärta
+pelle; hjärta
+arne; hjärna
+holger; hjärna
