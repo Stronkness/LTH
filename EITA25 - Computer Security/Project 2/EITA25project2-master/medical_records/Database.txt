@@ -1,0 +1,5 @@
+Name; Division; Doctor(s); Nurse(s); Logs
+emelie; hjärta; maria; fredrik; hejhejhallåååå:
+pelle; hjärta; maria; fredrik; väldigt sjuk:
+anna; hjärta; kim; hej; sjuk:samma division lit:jag heter kim:hej jag heter fredrik:
+kalle; hjärna; holger; eva; kalle har vattenskalle:nu mår han bra:nu mår han dåligt igen:jag heter eva:hej emelie:cooolt om det funkar:

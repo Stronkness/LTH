@@ -1,0 +1,8 @@
+openssl req -new -x509 -keyout government.key -out government.csr
+keytool -importcert -trustcacerts -file CA.csr -alias CA -keystore governmenttruststore
+keytool -keystore governmentkeystore -genkey -alias government
+keytool -keystore governmentkeystore -certreq -alias government -keyalg rsa -file government.csr
+openssl x509 -req -CA CA.csr -CAkey CAkey.key -in government.csr -out government.crt -days 365 -CAcreateserial
+keytool -importcert -trustcacerts -file CA.csr -alias CA -keystore governmentkeystore
+keytool -import -keystore governmentkeystore -file government.crt -alias government
+keytool -v -list -keystore governmentkeystore

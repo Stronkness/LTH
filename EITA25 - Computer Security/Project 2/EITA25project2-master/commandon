@@ -1,0 +1,22 @@
+Skapa ett certifikat:
+openssl req -new -x509 -keyout test.key -out test.csr
+Common name: CA
+
+Skapa en truststore:
+keytool -truststore clientkeystore -genkey
+
+Skapa en keystore:
+keytool -keystore clientkeystore -genkey
+
+Signrequest:
+keytool –keystore clientkeystore –certreq –alias client –keyalg rsa -file client-csr
+
+Signa ett cert:
+openssl x509 -req -CA CA.csr -CAkey CAkey.key -days 365 -in signreq.csr -out signed.crt -CAcreateserial
+
+Importa cert:
+keytool -importcert -trustcacerts -file CA.csr -alias CA -keystore clientkeystore
+
+
+
+
