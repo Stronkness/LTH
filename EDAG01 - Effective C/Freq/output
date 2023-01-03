@@ -1,0 +1,10 @@
+added abc
+trying to delete abc: deleted
+trying to delete abc: not found
+trying to delete abc: not found
+trying to delete def: not found
+trying to delete abc: not found
+trying to delete xyz: not found
+trying to delete xyz: not found
+trying to delete xyz: not found
+result:  0
