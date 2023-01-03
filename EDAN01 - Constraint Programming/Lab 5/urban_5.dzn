@@ -1,0 +1,5 @@
+n = 5;
+n_commercial = 0;
+n_residential = 25;
+point_distribution =
+    [-5, -4, -3, 3, 4, 5];

@@ -1,0 +1,13 @@
+% all lots are occupied
+% n*n = n_commercial + n_residential
+
+% row/column lenght
+n = 5;
+% number of commercial lots in the area
+n_commercial = 13;
+% number of residential lots in the area
+n_residential = 12;
+
+% index is the number of residential lots in the row/column
+point_distribution =
+    [-5, -4, -3, 3, 4, 5];
