@@ -1,0 +1,22 @@
+4. T - the symbol is in the tect (code) section
+   U - the symbol is undefined
+   G - the symbol is in an initialized data section for small objects
+   C - the symbol is common. Common symbols are uninitialized data
+   -Os - optimized for size. -Os enables all -O2 optimizations except those that often increase code size
+5. Some speed difference. Clock frequency remain the same. There were some differences between iterations in speed. Optmization 
+   level showed a large difference between no-optimized and optimized code
+7. We could find some lvx adn stvx (5 isch)
+8. -fprofile-generate: Generate a profile when run it will save which branches it jumps to
+   -fprofile-use: use it
+9. 
+an8218fr-s@power:~/lab6$ ./a.out
+    Perm  Towers  Queens   Intmm      Mm  Puzzle   Quick  Bubble    Tree     FFT
+     349     636    1326      61      58    1036      50     427      79     160
+an8218fr-s@power:~/lab6$ gcc -O3 -fprofile-use mipsx.c tbr.s timebase.c -mcpu=power8
+an8218fr-s@power:~/lab6$ ./a.out
+    Perm  Towers  Queens   Intmm      Mm  Puzzle   Quick  Bubble    Tree     FFT
+     242     241     456      44      54     697      46     469      79     237
+an8218fr-s@power:~/lab6$ 
+10. -flto optimizes the compiled code
+11. c is rotated... Hard to vectorize a 2d-array
+12. Compilers matter. IBM rules. CHEATING

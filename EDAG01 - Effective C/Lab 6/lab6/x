@@ -1,0 +1,308 @@
+
+a.out:     file format elf64-powerpcle
+
+
+Disassembly of section .init:
+
+0000000000000580 <00000035.plt_call.__gmon_start__>:
+ 580:	18 00 41 f8 	std     r2,24(r1)
+ 584:	ff ff 82 3d 	addis   r12,r2,-1
+ 588:	f8 7f 8c e9 	ld      r12,32760(r12)
+ 58c:	a6 03 89 7d 	mtctr   r12
+ 590:	20 04 80 4e 	bctr
+	...
+
+00000000000005a0 <_init>:
+ 5a0:	02 00 4c 3c 	addis   r2,r12,2
+ 5a4:	60 79 42 38 	addi    r2,r2,31072
+ 5a8:	a6 02 08 7c 	mflr    r0
+ 5ac:	10 00 01 f8 	std     r0,16(r1)
+ 5b0:	a1 ff 21 f8 	stdu    r1,-96(r1)
+ 5b4:	00 00 00 60 	nop
+ 5b8:	08 80 02 e8 	ld      r0,-32760(r2)
+ 5bc:	00 00 a0 2f 	cmpdi   cr7,r0,0
+ 5c0:	0c 00 fe 41 	beq+    cr7,5cc <_init+0x2c>
+ 5c4:	bd ff ff 4b 	bl      580 <00000035.plt_call.__gmon_start__>
+ 5c8:	18 00 41 e8 	ld      r2,24(r1)
+ 5cc:	60 00 21 38 	addi    r1,r1,96
+ 5d0:	10 00 01 e8 	ld      r0,16(r1)
+ 5d4:	a6 03 08 7c 	mtlr    r0
+ 5d8:	20 00 80 4e 	blr
+
+Disassembly of section .text:
+
+00000000000005e0 <00000047.plt_call.__libc_start_main@@GLIBC_2.17>:
+ 5e0:	18 00 41 f8 	std     r2,24(r1)
+ 5e4:	ff ff 82 3d 	addis   r12,r2,-1
+ 5e8:	e8 7f 8c e9 	ld      r12,32744(r12)
+ 5ec:	a6 03 89 7d 	mtctr   r12
+ 5f0:	20 04 80 4e 	bctr
+	...
+
+0000000000000600 <00000047.plt_call.__printf_chk@@GLIBC_2.17>:
+ 600:	18 00 41 f8 	std     r2,24(r1)
+ 604:	ff ff 82 3d 	addis   r12,r2,-1
+ 608:	f0 7f 8c e9 	ld      r12,32752(r12)
+ 60c:	a6 03 89 7d 	mtctr   r12
+ 610:	20 04 80 4e 	bctr
+	...
+
+0000000000000620 <00000047.plt_call.__cxa_finalize@@GLIBC_2.17>:
+ 620:	18 00 41 f8 	std     r2,24(r1)
+ 624:	ff ff 82 3d 	addis   r12,r2,-1
+ 628:	e0 7f 8c e9 	ld      r12,32736(r12)
+ 62c:	a6 03 89 7d 	mtctr   r12
+ 630:	20 04 80 4e 	bctr
+	...
+
+0000000000000640 <main>:
+ 640:	02 00 4c 3c 	addis   r2,r12,2
+ 644:	c0 78 42 38 	addi    r2,r2,30912
+ 648:	a6 02 08 7c 	mflr    r0
+ 64c:	f8 ff e1 fb 	std     r31,-8(r1)
+ 650:	0d 00 80 38 	li      r4,13
+ 654:	0a 00 60 38 	li      r3,10
+ 658:	10 00 01 f8 	std     r0,16(r1)
+ 65c:	91 ff 21 f8 	stdu    r1,-112(r1)
+ 660:	e1 01 00 48 	bl      840 <p0>
+ 664:	00 00 00 60 	nop
+ 668:	fe ff 82 3c 	addis   r4,r2,-2
+ 66c:	d0 8a 84 38 	addi    r4,r4,-30000
+ 670:	78 1b 7f 7c 	mr      r31,r3
+ 674:	78 1b 65 7c 	mr      r5,r3
+ 678:	01 00 60 38 	li      r3,1
+ 67c:	85 ff ff 4b 	bl      600 <00000047.plt_call.__printf_chk@@GLIBC_2.17>
+ 680:	18 00 41 e8 	ld      r2,24(r1)
+ 684:	70 00 21 38 	addi    r1,r1,112
+ 688:	78 fb e3 7f 	mr      r3,r31
+ 68c:	10 00 01 e8 	ld      r0,16(r1)
+ 690:	f8 ff e1 eb 	ld      r31,-8(r1)
+ 694:	a6 03 08 7c 	mtlr    r0
+ 698:	20 00 80 4e 	blr
+ 69c:	00 00 00 00 	.long 0x0
+ 6a0:	00 00 00 01 	.long 0x1000000
+ 6a4:	80 01 00 00 	.long 0x180
+
+00000000000006a8 <_start>:
+ 6a8:	02 00 4c 3c 	addis   r2,r12,2
+ 6ac:	58 78 42 38 	addi    r2,r2,30808
+ 6b0:	78 0b 29 7c 	mr      r9,r1
+ 6b4:	e4 06 21 78 	rldicr  r1,r1,0,59
+ 6b8:	00 00 00 38 	li      r0,0
+ 6bc:	81 ff 21 f8 	stdu    r1,-128(r1)
+ 6c0:	a6 03 08 7c 	mtlr    r0
+ 6c4:	00 00 01 f8 	std     r0,0(r1)
+ 6c8:	10 80 02 e9 	ld      r8,-32752(r2)
+ 6cc:	14 ff ff 4b 	b       5e0 <00000047.plt_call.__libc_start_main@@GLIBC_2.17>
+ 6d0:	00 00 00 60 	nop
+	...
+ 6dc:	40 20 0c 00 	.long 0xc2040
+ 6e0:	2c 00 00 00 	.long 0x2c
+ 6e4:	06 00 5f 73 	andi.   r31,r26,6
+ 6e8:	74 61 72 74 	andis.  r18,r3,24948
+ 6ec:	00 00 00 60 	nop
+
+00000000000006f0 <deregister_tm_clones>:
+ 6f0:	02 00 4c 3c 	addis   r2,r12,2
+ 6f4:	10 78 42 38 	addi    r2,r2,30736
+ 6f8:	00 00 00 60 	nop
+ 6fc:	00 00 00 60 	nop
+ 700:	e1 ff 21 f8 	stdu    r1,-32(r1)
+ 704:	10 81 62 38 	addi    r3,r2,-32496
+ 708:	10 81 22 39 	addi    r9,r2,-32496
+ 70c:	00 18 a9 7f 	cmpd    cr7,r9,r3
+ 710:	38 00 9e 41 	beq     cr7,748 <deregister_tm_clones+0x58>
+ 714:	00 00 00 60 	nop
+ 718:	18 80 22 e9 	ld      r9,-32744(r2)
+ 71c:	00 00 a9 2f 	cmpdi   cr7,r9,0
+ 720:	28 00 9e 41 	beq     cr7,748 <deregister_tm_clones+0x58>
+ 724:	a6 02 08 7c 	mflr    r0
+ 728:	18 00 41 f8 	std     r2,24(r1)
+ 72c:	78 4b 2c 7d 	mr      r12,r9
+ 730:	a6 03 29 7d 	mtctr   r9
+ 734:	30 00 01 f8 	std     r0,48(r1)
+ 738:	21 04 80 4e 	bctrl
+ 73c:	18 00 41 e8 	ld      r2,24(r1)
+ 740:	30 00 01 e8 	ld      r0,48(r1)
+ 744:	a6 03 08 7c 	mtlr    r0
+ 748:	20 00 21 38 	addi    r1,r1,32
+ 74c:	20 00 80 4e 	blr
+
+0000000000000750 <register_tm_clones>:
+ 750:	02 00 4c 3c 	addis   r2,r12,2
+ 754:	b0 77 42 38 	addi    r2,r2,30640
+ 758:	00 00 00 60 	nop
+ 75c:	00 00 00 60 	nop
+ 760:	e1 ff 21 f8 	stdu    r1,-32(r1)
+ 764:	10 81 62 38 	addi    r3,r2,-32496
+ 768:	10 81 82 38 	addi    r4,r2,-32496
+ 76c:	50 20 83 7c 	subf    r4,r3,r4
+ 770:	74 1e 84 7c 	sradi   r4,r4,3
+ 774:	74 0e 84 7c 	sradi   r4,r4,1
+ 778:	95 01 84 7c 	addze.  r4,r4
+ 77c:	38 00 82 41 	beq     7b4 <register_tm_clones+0x64>
+ 780:	00 00 00 60 	nop
+ 784:	20 80 22 e9 	ld      r9,-32736(r2)
+ 788:	00 00 a9 2f 	cmpdi   cr7,r9,0
+ 78c:	28 00 9e 41 	beq     cr7,7b4 <register_tm_clones+0x64>
+ 790:	a6 02 08 7c 	mflr    r0
+ 794:	18 00 41 f8 	std     r2,24(r1)
+ 798:	78 4b 2c 7d 	mr      r12,r9
+ 79c:	a6 03 29 7d 	mtctr   r9
+ 7a0:	30 00 01 f8 	std     r0,48(r1)
+ 7a4:	21 04 80 4e 	bctrl
+ 7a8:	18 00 41 e8 	ld      r2,24(r1)
+ 7ac:	30 00 01 e8 	ld      r0,48(r1)
+ 7b0:	a6 03 08 7c 	mtlr    r0
+ 7b4:	20 00 21 38 	addi    r1,r1,32
+ 7b8:	20 00 80 4e 	blr
+ 7bc:	00 00 42 60 	ori     r2,r2,0
+
+00000000000007c0 <__do_global_dtors_aux>:
+ 7c0:	02 00 4c 3c 	addis   r2,r12,2
+ 7c4:	40 77 42 38 	addi    r2,r2,30528
+ 7c8:	00 00 00 60 	nop
+ 7cc:	10 81 22 89 	lbz     r9,-32496(r2)
+ 7d0:	e1 ff 21 f8 	stdu    r1,-32(r1)
+ 7d4:	00 00 89 2f 	cmpwi   cr7,r9,0
+ 7d8:	44 00 9e 40 	bne     cr7,81c <__do_global_dtors_aux+0x5c>
+ 7dc:	a6 02 08 7c 	mflr    r0
+ 7e0:	00 00 00 60 	nop
+ 7e4:	28 80 22 e9 	ld      r9,-32728(r2)
+ 7e8:	00 00 a9 2f 	cmpdi   cr7,r9,0
+ 7ec:	30 00 01 f8 	std     r0,48(r1)
+ 7f0:	14 00 9e 41 	beq     cr7,804 <__do_global_dtors_aux+0x44>
+ 7f4:	00 00 00 60 	nop
+ 7f8:	08 81 62 e8 	ld      r3,-32504(r2)
+ 7fc:	25 fe ff 4b 	bl      620 <00000047.plt_call.__cxa_finalize@@GLIBC_2.17>
+ 800:	18 00 41 e8 	ld      r2,24(r1)
+ 804:	f5 fe ff 4b 	bl      6f8 <deregister_tm_clones+0x8>
+ 808:	30 00 01 e8 	ld      r0,48(r1)
+ 80c:	01 00 20 39 	li      r9,1
+ 810:	00 00 00 60 	nop
+ 814:	10 81 22 99 	stb     r9,-32496(r2)
+ 818:	a6 03 08 7c 	mtlr    r0
+ 81c:	20 00 21 38 	addi    r1,r1,32
+ 820:	20 00 80 4e 	blr
+ 824:	00 00 00 60 	nop
+ 828:	00 00 00 60 	nop
+ 82c:	00 00 42 60 	ori     r2,r2,0
+
+0000000000000830 <frame_dummy>:
+ 830:	02 00 4c 3c 	addis   r2,r12,2
+ 834:	d0 76 42 38 	addi    r2,r2,30416
+ 838:	20 ff ff 4b 	b       758 <register_tm_clones+0x8>
+ 83c:	00 00 00 60 	nop
+
+0000000000000840 <p0>:
+ 840:	14 22 63 7c 	add     r3,r3,r4
+ 844:	b4 07 63 7c 	extsw   r3,r3
+ 848:	20 00 80 4e 	blr
+	...
+ 858:	00 00 00 60 	nop
+ 85c:	00 00 00 60 	nop
+
+0000000000000860 <__libc_csu_init>:
+ 860:	02 00 4c 3c 	addis   r2,r12,2
+ 864:	a0 76 42 38 	addi    r2,r2,30368
+ 868:	a6 02 08 7c 	mflr    r0
+ 86c:	d0 ff 41 fb 	std     r26,-48(r1)
+ 870:	d8 ff 61 fb 	std     r27,-40(r1)
+ 874:	78 2b ba 7c 	mr      r26,r5
+ 878:	e0 ff 81 fb 	std     r28,-32(r1)
+ 87c:	e8 ff a1 fb 	std     r29,-24(r1)
+ 880:	ff ff a2 3f 	addis   r29,r2,-1
+ 884:	78 1b 7c 7c 	mr      r28,r3
+ 888:	f0 ff c1 fb 	std     r30,-16(r1)
+ 88c:	ff ff c2 3f 	addis   r30,r2,-1
+ 890:	98 7d bd 3b 	addi    r29,r29,32152
+ 894:	90 7d de 3b 	addi    r30,r30,32144
+ 898:	78 23 9b 7c 	mr      r27,r4
+ 89c:	50 e8 be 7f 	subf    r29,r30,r29
+ 8a0:	10 00 01 f8 	std     r0,16(r1)
+ 8a4:	b1 ff 21 f8 	stdu    r1,-80(r1)
+ 8a8:	01 fd ff 4b 	bl      5a8 <_init+0x8>
+ 8ac:	00 00 00 60 	nop
+ 8b0:	75 1e bd 7f 	sradi.  r29,r29,3
+ 8b4:	50 00 82 41 	beq     904 <__libc_csu_init+0xa4>
+ 8b8:	48 00 e1 fb 	std     r31,72(r1)
+ 8bc:	f8 ff de 3b 	addi    r30,r30,-8
+ 8c0:	00 00 e0 3b 	li      r31,0
+ 8c4:	00 00 00 60 	nop
+ 8c8:	00 00 00 60 	nop
+ 8cc:	00 00 42 60 	ori     r2,r2,0
+ 8d0:	09 00 3e e9 	ldu     r9,8(r30)
+ 8d4:	78 d3 45 7f 	mr      r5,r26
+ 8d8:	18 00 41 f8 	std     r2,24(r1)
+ 8dc:	78 db 64 7f 	mr      r4,r27
+ 8e0:	78 e3 83 7f 	mr      r3,r28
+ 8e4:	01 00 ff 3b 	addi    r31,r31,1
+ 8e8:	a6 03 29 7d 	mtctr   r9
+ 8ec:	78 4b 2c 7d 	mr      r12,r9
+ 8f0:	21 04 80 4e 	bctrl
+ 8f4:	18 00 41 e8 	ld      r2,24(r1)
+ 8f8:	40 f8 bd 7f 	cmpld   cr7,r29,r31
+ 8fc:	d4 ff 9e 40 	bne     cr7,8d0 <__libc_csu_init+0x70>
+ 900:	48 00 e1 eb 	ld      r31,72(r1)
+ 904:	50 00 21 38 	addi    r1,r1,80
+ 908:	10 00 01 e8 	ld      r0,16(r1)
+ 90c:	d0 ff 41 eb 	ld      r26,-48(r1)
+ 910:	d8 ff 61 eb 	ld      r27,-40(r1)
+ 914:	e0 ff 81 eb 	ld      r28,-32(r1)
+ 918:	e8 ff a1 eb 	ld      r29,-24(r1)
+ 91c:	f0 ff c1 eb 	ld      r30,-16(r1)
+ 920:	a6 03 08 7c 	mtlr    r0
+ 924:	20 00 80 4e 	blr
+ 928:	00 00 00 00 	.long 0x0
+ 92c:	00 00 00 01 	.long 0x1000000
+ 930:	80 06 00 00 	.long 0x680
+ 934:	00 00 00 60 	nop
+ 938:	00 00 00 60 	nop
+ 93c:	00 00 42 60 	ori     r2,r2,0
+
+0000000000000940 <__libc_csu_fini>:
+ 940:	20 00 80 4e 	blr
+	...
+ 950:	70 f5 01 00 	.long 0x1f570
+ 954:	00 00 00 00 	.long 0x0
+
+0000000000000958 <__glink_PLTresolve>:
+ 958:	a6 02 08 7c 	mflr    r0
+ 95c:	05 00 9f 42 	bcl     20,4*cr7+so,960 <__glink_PLTresolve+0x8>
+ 960:	a6 02 68 7d 	mflr    r11
+ 964:	18 00 41 f8 	std     r2,24(r1)
+ 968:	f0 ff 4b e8 	ld      r2,-16(r11)
+ 96c:	a6 03 08 7c 	mtlr    r0
+ 970:	50 60 8b 7d 	subf    r12,r11,r12
+ 974:	14 5a 62 7d 	add     r11,r2,r11
+ 978:	d0 ff 0c 38 	addi    r0,r12,-48
+ 97c:	00 00 8b e9 	ld      r12,0(r11)
+ 980:	82 f0 00 78 	rldicl  r0,r0,62,2
+ 984:	a6 03 89 7d 	mtctr   r12
+ 988:	08 00 6b e9 	ld      r11,8(r11)
+ 98c:	20 04 80 4e 	bctr
+
+0000000000000990 <__cxa_finalize@plt>:
+ 990:	c8 ff ff 4b 	b       958 <__glink_PLTresolve>
+
+0000000000000994 <__libc_start_main@plt>:
+ 994:	c4 ff ff 4b 	b       958 <__glink_PLTresolve>
+
+0000000000000998 <__printf_chk@plt>:
+ 998:	c0 ff ff 4b 	b       958 <__glink_PLTresolve>
+
+000000000000099c <__gmon_start__@plt>:
+ 99c:	bc ff ff 4b 	b       958 <__glink_PLTresolve>
+
+Disassembly of section .fini:
+
+00000000000009a0 <_fini>:
+ 9a0:	02 00 4c 3c 	addis   r2,r12,2
+ 9a4:	60 75 42 38 	addi    r2,r2,30048
+ 9a8:	a6 02 08 7c 	mflr    r0
+ 9ac:	10 00 01 f8 	std     r0,16(r1)
+ 9b0:	a1 ff 21 f8 	stdu    r1,-96(r1)
+ 9b4:	60 00 21 38 	addi    r1,r1,96
+ 9b8:	10 00 01 e8 	ld      r0,16(r1)
+ 9bc:	a6 03 08 7c 	mtlr    r0
+ 9c0:	20 00 80 4e 	blr

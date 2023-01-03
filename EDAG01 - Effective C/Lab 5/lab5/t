@@ -1,0 +1,7 @@
+export FILE=$1
+
+rm -rf a.out *.vgi *.qt *.dir &&
+/opt/gcc/9.2.0/bin/gcc $FILE.c -fno-tree-vectorize -O3 -mcpu=power8 -fno-inline &&
+/opt/at13.0/bin/valgrind --tool=itrace --fn-start=main --binary-outfile=$FILE.vgi --num-insns-to-collect=1k ./a.out < in &&
+/opt/at13.0/bin/vgi2qt -f $FILE.vgi -o $FILE.qt &&
+/opt/ibm/sim_ppc/sim_p8/bin/run_timer $FILE.qt 1000 100 1 $FILE -inf_all -p 3 -b 1 -e 2000

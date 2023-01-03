@@ -1,0 +1,14 @@
+3. 3 clock cycles per iteration
+9. 
+   a:
+   50th clock cycle as it begins after the five dots, Iop id 707.
+   Last iteration at clock cycle 340. (340-50)/100 = 2.9 clock cycles per iteration
+
+   b:
+   50th clock cycle. Iop id 704.
+   Last iteration at clock cycle 651. (651-50)/100 = 6.01 clock cycles per iteration
+10. fmadd - it states that source is not ready, it has to wait for other operations to be done, the red signs indicate wait time
+12. stw - Store, std - Store Double Word, stwcx - Store Word Conditional Index
+    Too many store operations, there are not enough resources to write to store all the time.
+    Hence the waiting. some bc (Branch Conditional) were also quite large and waited some
+13. 

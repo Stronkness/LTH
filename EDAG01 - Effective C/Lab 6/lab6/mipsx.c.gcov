@@ -1,0 +1,1361 @@
+        -:    0:Source:mipsx.c
+        -:    0:Graph:mipsx.gcno
+        -:    0:Data:mipsx.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*  This is a suite of benchmarks that are relatively short, both in program
+        -:    2:    size and execution time.  It requires no input, and prints the execution
+        -:    3:    time for each program, using the system- dependent routine Getclock,
+        -:    4:    below, to find out the current CPU time.  It does a rudimentary check to
+        -:    5:    make sure each program gets the right output.  These programs were
+        -:    6:    gathered by John Hennessy and modified by Peter Nye. */
+        -:    7:
+        -:    8:#include <stdio.h>
+        -:    9:#include <stdlib.h>
+        -:   10:#include <time.h>
+        -:   11:#include "timebase.h"
+        -:   12:
+        -:   13:#define  nil		 0
+        -:   14:#define	 false		 0
+        -:   15:#define  true		 1
+        -:   16:#define  bubblebase 	 1.61
+        -:   17:#define  dnfbase 	 3.5
+        -:   18:#define  permbase 	 1.75
+        -:   19:#define  queensbase 	 1.83
+        -:   20:#define  towersbase 	 2.39
+        -:   21:#define  quickbase 	 1.92
+        -:   22:#define  intmmbase 	 1.46
+        -:   23:#define  treebase 	  2.5
+        -:   24:#define  mmbase 	 0.73
+        -:   25:#define  fpmmbase 	 2.92
+        -:   26:#define  puzzlebase 	 0.5
+        -:   27:#define  fftbase 	 1.11
+        -:   28:#define  fpfftbase 	 4.44
+        -:   29:    /* Towers */
+        -:   30:#define maxcells 	 18
+        -:   31:
+        -:   32:    /* Intmm, Mm */
+        -:   33:#define rowsize 	 400
+        -:   34:
+        -:   35:    /* Puzzle */
+        -:   36:#define size	 	 511
+        -:   37:#define classmax 	 3
+        -:   38:#define typemax 	 12
+        -:   39:#define d 		 8
+        -:   40:
+        -:   41:    /* Bubble, Quick */
+        -:   42:#define sortelements 	 300000
+        -:   43:#define srtelements 	 10000
+        -:   44:
+        -:   45:    /* fft */
+        -:   46:#define fftsize 	 256 
+        -:   47:#define fftsize2 	 129  
+        -:   48:
+        -:   49:    /* Perm */
+        -:   50:#define    permrange 13
+        -:   51:
+        -:   52:   /* tree */
+        -:   53:struct node {
+        -:   54:	struct node *left,*right;
+        -:   55:	int val;
+        -:   56:};
+        -:   57:
+        -:   58:    /* Towers */
+        -:   59:#define    stackrange	3
+        -:   60:#define    discs	17
+        -:   61:struct element {
+        -:   62:	int discsize;
+        -:   63:	int next;
+        -:   64:};
+        -:   65:
+        -:   66:    /* FFT */
+        -:   67:struct    complex { float rp, ip; };
+        -:   68:
+        -:   69:float    fixed,floated;
+        -:   70:
+        -:   71:    /* global */
+        -:   72:double    timer;
+        -:   73:double    xtimes[11];
+        -:   74:int    seed;
+        -:   75:
+        -:   76:    /* Perm */
+        -:   77:int    permarray[permrange+1];
+        -:   78:int    pctr;
+        -:   79:
+        -:   80:    /* tree */
+        -:   81:struct node *tree;
+        -:   82:
+        -:   83:    /* Towers */
+        -:   84:int	stack[stackrange+1];
+        -:   85:struct element    cellspace[maxcells+1];
+        -:   86:int	freelist, movesdone;
+        -:   87:
+        -:   88:    /* Intmm, Mm */
+        -:   89:int	ima[rowsize+1][rowsize+1],
+        -:   90:	imb[rowsize+1][rowsize+1],
+        -:   91:	imr[rowsize+1][rowsize+1];
+        -:   92:float	rma[rowsize+1][rowsize+1],
+        -:   93:	rmb[rowsize+1][rowsize+1],
+        -:   94:	rmr[rowsize+1][rowsize+1];
+        -:   95:
+        -:   96:    /* Puzzle */
+        -:   97:int	piececount[classmax+1],
+        -:   98:	class[typemax+1],
+        -:   99:	piecemax[typemax+1],
+        -:  100:	puzzl[size+1],
+        -:  101:	p[typemax+1][size+1],
+        -:  102:	n,
+        -:  103:	kount;
+        -:  104:
+        -:  105:    /* Bubble, Quick */
+        -:  106:int	sortlist[sortelements+1],
+        -:  107:	biggest, littlest,
+        -:  108:	top;
+        -:  109:
+        -:  110:    /* FFT */
+        -:  111:struct complex z[fftsize+1], w[fftsize+1], e[fftsize2+1];
+        -:  112:float    zr, zi;
+        -:  113:
+        -:  114:/* global procedures */
+        -:  115:
+function Getclock called 20 returned 100% blocks executed 100%
+       20:  116:double Getclock()
+        -:  117:{
+        -:  118:	/* time in milliseconds. */
+       20:  119:	return 1000 * timebase_sec();
+call    0 returned 100%
+        -:  120:}
+        -:  121:
+function Initrand called 5 returned 100% blocks executed 100%
+        5:  122:void Initrand () {
+        5:  123:    seed = 74755;
+        5:  124:}
+        -:  125:
+function Rand called 1250000 returned 100% blocks executed 100%
+  1250000:  126:int Rand () {
+  1250000:  127:    seed = (seed * 1309 + 13849) & 65535;
+  1250000:  128:    return (seed);
+        -:  129:}
+        -:  130:
+        -:  131:
+        -:  132:
+        -:  133:/* Permutation program, heavily recursive, written by Denny Brown. */
+        -:  134:
+function Swap called 21772794 returned 100% blocks executed 100%
+ 21772794:  135:void Swap (a,b) int *a, *b; {
+        -:  136:    int t;
+ 21772794:  137:    t = *a;  *a = *b;  *b = t;
+ 21772794:  138:}
+        -:  139:
+function Initialize called 3 returned 100% blocks executed 100%
+        3:  140:void Initialize () {
+        -:  141:    int i;
+       24:  142:    for ( i = 1; i <= 7; i++ ) {
+branch  0 taken 88%
+branch  1 taken 13% (fallthrough)
+       21:  143:	permarray[i]=i-1;
+        -:  144:    }
+        3:  145:}
+        -:  146:
+function Permute called 18705903 returned 100% blocks executed 100%
+ 18705903:  147:void Permute (n) int n; {
+        -:  148:    int k;
+ 18705903:  149:    pctr = pctr + 1;
+ 18705903:  150:    if ( n!=1 )  {
+branch  0 taken 42% (fallthrough)
+branch  1 taken 58%
+  7819503:  151:	Permute(n-1);
+call    0 returned 100%
+ 18705900:  152:	for ( k = n-1; k >= 1; k-- ) {
+branch  0 taken 58%
+branch  1 taken 42% (fallthrough)
+ 10886397:  153:	    Swap(&permarray[n],&permarray[k]);
+call    0 returned 100%
+ 10886397:  154:	    Permute(n-1);
+call    0 returned 100%
+ 10886397:  155:	    Swap(&permarray[n],&permarray[k]);
+call    0 returned 100%
+        -:  156:	}
+        -:  157:    }
+ 18705903:  158:}
+        -:  159:
+function Perm called 1 returned 100% blocks executed 88%
+        1:  160:void Perm () {
+        -:  161:    int i;
+        1:  162:    pctr = 0;
+        4:  163:    for ( i = 1; i <= 3; i++ ) {
+branch  0 taken 75%
+branch  1 taken 25% (fallthrough)
+        3:  164:	Initialize();
+call    0 returned 100%
+        3:  165:	Permute(permrange-3);
+call    0 returned 100%
+        -:  166:    }
+        1:  167:    if ( pctr != 18705903 ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  168:	printf(" Error in Perm. %d\n", pctr);
+call    0 never executed
+        -:  169:    }
+        1:  170:}
+        -:  171:
+        -:  172:
+        -:  173:
+        -:  174:/*  Program to Solve the Towers of Hanoi */
+        -:  175:
+function Error called 0 returned 0% blocks executed 0%
+    #####:  176:void Error (emsg) char *emsg; {
+    #####:  177:    printf(" Error in Towers: %s\n",emsg);
+call    0 never executed
+    #####:  178:}
+        -:  179:
+function Makenull called 300 returned 100% blocks executed 100%
+      300:  180:void Makenull (int s) {
+      300:  181:    stack[s]=0;
+      300:  182:}
+        -:  183:
+function Getelement called 13108800 returned 100% blocks executed 80%
+ 13108800:  184:int Getelement () {
+ 13108800:  185:    int temp = 0;
+ 13108800:  186:    if ( freelist>0 ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+ 13108800:  187:	temp = freelist;
+ 13108800:  188:	freelist = cellspace[freelist].next;
+        -:  189:    } else {
+    #####:  190:	Error("out of space   ");
+call    0 never executed
+        -:  191:    }
+ 13108800:  192:    return (temp);
+        -:  193:}
+        -:  194:
+function Push called 13108800 returned 100% blocks executed 86%
+ 13108800:  195:void Push(i,s) int i, s; {
+        -:  196:    int errorfound, localel;
+ 13108800:  197:    errorfound=false;
+ 13108800:  198:    if ( stack[s] > 0 ) {
+branch  0 taken 99% (fallthrough)
+branch  1 taken 1%
+ 13032100:  199:	if ( cellspace[stack[s]].discsize<=i ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  200:	    errorfound=true;
+    #####:  201:	    Error("disc size error");
+call    0 never executed
+        -:  202:	}
+        -:  203:    }
+ 13108800:  204:    if ( ! errorfound ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+ 13108800:  205:	localel=Getelement();
+call    0 returned 100%
+ 13108800:  206:	cellspace[localel].next=stack[s];
+ 13108800:  207:	stack[s]=localel;
+ 13108800:  208:	cellspace[localel].discsize=i;
+        -:  209:    }
+ 13108800:  210:}
+        -:  211:
+function Init called 100 returned 100% blocks executed 100%
+      100:  212:void Init (s,n) int s, n; {
+        -:  213:    int discctr;
+      100:  214:    Makenull(s);
+call    0 returned 100%
+     1800:  215:    for ( discctr = n; discctr >= 1; discctr-- ) {
+branch  0 taken 94%
+branch  1 taken 6% (fallthrough)
+     1700:  216:	Push(discctr,s);
+call    0 returned 100%
+        -:  217:    }
+      100:  218:}
+        -:  219:
+function Pop called 13107100 returned 100% blocks executed 60%
+ 13107100:  220:int Pop (s) int s; {
+        -:  221:    int temp, temp1;
+ 13107100:  222:    if ( stack[s] > 0 ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+ 13107100:  223:	temp1 = cellspace[stack[s]].discsize;
+ 13107100:  224:	temp = cellspace[stack[s]].next;
+ 13107100:  225:	cellspace[stack[s]].next=freelist;
+ 13107100:  226:	freelist=stack[s];
+ 13107100:  227:	stack[s]=temp;
+ 13107100:  228:	return (temp1);
+        -:  229:    } else {
+    #####:  230:	Error("nothing to pop ");
+call    0 never executed
+    #####:  231:	return (-1);
+        -:  232:    }
+        -:  233:}
+        -:  234:
+function Move called 13107100 returned 100% blocks executed 100%
+ 13107100:  235:void Move (s1,s2) int s1, s2; {
+ 13107100:  236:    Push(Pop(s1),s2);
+call    0 returned 100%
+call    1 returned 100%
+ 13107100:  237:    movesdone=movesdone+1;
+ 13107100:  238:}
+        -:  239:
+function tower called 13107100 returned 100% blocks executed 100%
+ 13107100:  240:void tower(i,j,k) int i,j,k; {
+        -:  241:    int other;
+ 13107100:  242:    if ( k==1 ) {
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+  6553600:  243:	Move(i,j);
+call    0 returned 100%
+        -:  244:    } else {
+  6553500:  245:	other=6-i-j;
+  6553500:  246:	tower(i,other,k-1);
+call    0 returned 100%
+  6553500:  247:	Move(i,j);
+call    0 returned 100%
+  6553500:  248:	tower(other,j,k-1);
+call    0 returned 100%
+        -:  249:    }
+ 13107100:  250:}
+        -:  251:
+        -:  252:
+function Towers called 1 returned 100% blocks executed 92%
+        1:  253:void Towers () {
+        -:  254:    int i;
+        -:  255:    int j;
+      101:  256:    for (j = 0; j < 100; ++j) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+     1900:  257:    for ( i=1; i <= maxcells; i++ ) {
+branch  0 taken 95%
+branch  1 taken 5% (fallthrough)
+     1800:  258:	cellspace[i].next=i-1;
+        -:  259:    }
+      100:  260:    freelist=maxcells;
+      100:  261:    Init(1,discs);
+call    0 returned 100%
+      100:  262:    Makenull(2);
+call    0 returned 100%
+      100:  263:    Makenull(3);
+call    0 returned 100%
+      100:  264:    movesdone=0;
+      100:  265:    tower(1,2,discs);
+call    0 returned 100%
+      100:  266:    if ( movesdone != 131071 ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  267:	printf (" Error in Towers: %d\n", movesdone);
+call    0 never executed
+        -:  268:    }
+        -:  269:    }
+        1:  270:}
+        -:  271:
+        -:  272:
+        -:  273:/* The eight queens problem, solved 50 times. */
+        -:  274:
+function Try called 11300000 returned 100% blocks executed 100%
+ 11300000:  275:void Try(i, q, a, b, c, x) int i, *q, a[], b[], c[], x[]; {
+        -:  276:    int j;
+ 11300000:  277:    j = 0;
+ 11300000:  278:    *q = false;
+110200000:  279:    while ( (! *q) && (j != 8) ) {
+branch  0 taken 99% (fallthrough)
+branch  1 taken 1%
+branch  2 taken 89%
+branch  3 taken 11% (fallthrough)
+ 87600000:  280:	j = j + 1;
+ 87600000:  281:	*q = false;
+ 87600000:  282:	if ( b[j] && a[i+j] && c[i-j+7] ) {
+branch  0 taken 38% (fallthrough)
+branch  1 taken 62%
+branch  2 taken 71% (fallthrough)
+branch  3 taken 29%
+branch  4 taken 47% (fallthrough)
+branch  5 taken 53%
+ 11300000:  283:	    x[i] = j;
+ 11300000:  284:	    b[j] = false;
+ 11300000:  285:	    a[i+j] = false;
+ 11300000:  286:	    c[i-j+7] = false;
+ 11300000:  287:	    if ( i < 8 ) {
+branch  0 taken 99% (fallthrough)
+branch  1 taken 1%
+ 11200000:  288:		Try(i+1,q,a,b,c,x);
+call    0 returned 100%
+ 11200000:  289:		if ( ! *q ) {
+branch  0 taken 94% (fallthrough)
+branch  1 taken 6%
+ 10500000:  290:		    b[j] = true;
+ 10500000:  291:		    a[i+j] = true;
+ 10500000:  292:		    c[i-j+7] = true;
+        -:  293:		}
+        -:  294:	    } else {
+   100000:  295:		*q = true;
+        -:  296:	    }
+        -:  297:	}
+        -:  298:    }
+ 11300000:  299:}
+        -:  300:    
+function Doit called 100000 returned 100% blocks executed 93%
+   100000:  301:void Doit () {
+        -:  302:    int i,q;
+        -:  303:    int a[9], b[17], c[15], x[9];
+   100000:  304:    i = 0 - 7;
+  2600000:  305:    while ( i <= 16 ) {
+branch  0 taken 96%
+branch  1 taken 4% (fallthrough)
+  2400000:  306:	if ( (i >= 1) && (i <= 8) ) a[i] = true;
+branch  0 taken 67% (fallthrough)
+branch  1 taken 33%
+branch  2 taken 50% (fallthrough)
+branch  3 taken 50%
+  2400000:  307:	if ( i >= 2 ) b[i] = true;
+branch  0 taken 63% (fallthrough)
+branch  1 taken 38%
+  2400000:  308:	if ( i <= 7 ) c[i+7] = true;
+branch  0 taken 63% (fallthrough)
+branch  1 taken 38%
+  2400000:  309:	i = i + 1;
+        -:  310:    }
+        -:  311:
+   100000:  312:    Try(1, &q, b, a, c, x);
+call    0 returned 100%
+   100000:  313:    if ( ! q ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  314:	printf (" Error in Queens.\n");
+call    0 never executed
+        -:  315:    }
+   100000:  316:}
+        -:  317:
+function Queens called 1 returned 100% blocks executed 100%
+        1:  318:void Queens () {
+        -:  319:    int i;
+        1:  320:    for ( i = 1; i <= 100000; i++ ) Doit();
+call    0 returned 100%
+branch  1 taken 99%
+branch  2 taken 1% (fallthrough)
+        1:  321:}
+        -:  322:
+        -:  323:/* Multiplies two integer matrices. */
+        -:  324:
+function Initmatrix called 2 returned 100% blocks executed 100%
+        2:  325:void Initmatrix ( m ) int m[rowsize+1][rowsize+1]; {
+        -:  326:    int temp, i, j;
+      802:  327:    for ( i = 1; i <= rowsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   320800:  328:	for ( j = 1; j <= rowsize; j++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   320000:  329:	    temp = Rand();
+call    0 returned 100%
+   320000:  330:	    m[i][j] = temp - (temp/120)*120 - 60;
+        -:  331:	}
+        -:  332:    }
+        2:  333:}
+        -:  334:
+        -:  335:/* computes the inner product of A[row,*] and B[*,column] */
+function Innerproduct called 160000 returned 100% blocks executed 100%
+   160000:  336:void Innerproduct( result,a,b, row,column)
+        -:  337:    int *result,a[rowsize+1][rowsize+1],b[rowsize+1][rowsize+1],row,column;
+        -:  338:{
+        -:  339:    int i;
+   160000:  340:    *result = 0;
+ 64160000:  341:    for(i = 1; i <= rowsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+ 64000000:  342:	*result = *result+a[row][i]*b[i][column];
+        -:  343:    }
+   160000:  344:}
+        -:  345:
+function Intmm called 1 returned 100% blocks executed 100%
+        1:  346:void Intmm () {
+        -:  347:    int i, j;
+        1:  348:    Initrand();
+call    0 returned 100%
+        1:  349:    Initmatrix (ima);
+call    0 returned 100%
+        1:  350:    Initmatrix (imb);
+call    0 returned 100%
+      401:  351:    for ( i = 1; i <= rowsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   160400:  352:	for ( j = 1; j <= rowsize; j++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   160000:  353:	    Innerproduct(&imr[i][j],ima,imb,i,j);
+call    0 returned 100%
+        -:  354:	}
+        -:  355:    }
+        1:  356:}
+        -:  357:
+        -:  358:/* Multiplies two real matrices. */
+        -:  359:
+function rInitmatrix called 2 returned 100% blocks executed 100%
+        2:  360:void rInitmatrix ( m ) float m[rowsize+1][rowsize+1]; {
+        -:  361:    int temp, i, j;
+      802:  362:    for ( i = 1; i <= rowsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   320800:  363:	for ( j = 1; j <= rowsize; j++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   320000:  364:	    temp = Rand();
+call    0 returned 100%
+   320000:  365:	    m[i][j] = (temp - (temp/120)*120 - 60)/3;
+        -:  366:	}
+        -:  367:    }
+        2:  368:}
+        -:  369:
+        -:  370:    /* computes the inner product of A[row,*] and B[*,column] */
+function rInnerproduct called 160000 returned 100% blocks executed 100%
+   160000:  371:void rInnerproduct(result,a,b,row,column)
+        -:  372:    float *result,a[rowsize+1][rowsize+1],b[rowsize+1][rowsize+1];
+        -:  373:    int row,column;
+        -:  374:{
+        -:  375:    int i;
+   160000:  376:    *result = 0.0;
+ 64160000:  377:    for (i = 1; i<=rowsize; i++) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+ 64000000:  378:	*result = *result+a[row][i]*b[i][column];
+        -:  379:    }
+   160000:  380:}
+        -:  381:
+function Mm called 1 returned 100% blocks executed 100%
+        1:  382:void Mm () {
+        -:  383:    int i, j;
+        1:  384:    Initrand();
+call    0 returned 100%
+        1:  385:    rInitmatrix (rma);
+call    0 returned 100%
+        1:  386:    rInitmatrix (rmb);
+call    0 returned 100%
+      401:  387:    for ( i = 1; i <= rowsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   160400:  388:	for ( j = 1; j <= rowsize; j++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   160000:  389:	    rInnerproduct(&rmr[i][j],rma,rmb,i,j);
+call    0 returned 100%
+        -:  390:	}
+        -:  391:    }
+        1:  392:}
+        -:  393:
+        -:  394:
+        -:  395:
+        -:  396:/* A compute-bound program from Forest Baskett. */
+        -:  397:
+function Fit called 4601700 returned 100% blocks executed 100%
+  4601700:  398:int Fit (i, j) int i, j; {
+        -:  399:    int k;
+162272100:  400:    for ( k = 0; k <= piecemax[i]; k++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+161670600:  401:	if ( p[i][k] ) if ( puzzl[j+k] ) return (false);
+branch  0 taken 10% (fallthrough)
+branch  1 taken 90%
+branch  2 taken 26% (fallthrough)
+branch  3 taken 74%
+        -:  402:    }
+   601500:  403:    return (true);
+        -:  404:}
+        -:  405:
+function Place called 601500 returned 100% blocks executed 100%
+   601500:  406:int Place (i, j) int i,j; {
+        -:  407:    int k;
+ 33929700:  408:    for ( k = 0; k <= piecemax[i]; k++ ) {
+branch  0 taken 98%
+branch  1 taken 2% (fallthrough)
+ 33328200:  409:	if ( p[i][k] ) puzzl[j+k] = true;
+branch  0 taken 11% (fallthrough)
+branch  1 taken 89%
+        -:  410:    }
+   601500:  411:    piececount[class[i]] = piececount[class[i]] - 1;
+  6906900:  412:    for ( k = j; k <= size; k++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+  6906600:  413:	if ( ! puzzl[k] ) {
+branch  0 taken 9% (fallthrough)
+branch  1 taken 91%
+   601200:  414:	    return (k);
+        -:  415:	}
+        -:  416:    }
+      300:  417:    return (0);
+        -:  418:}
+        -:  419:
+function Remove called 596100 returned 100% blocks executed 100%
+   596100:  420:void Remove (i, j) int i, j; {
+        -:  421:    int k;
+ 33593400:  422:    for ( k = 0; k <= piecemax[i]; k++ ) {
+branch  0 taken 98%
+branch  1 taken 2% (fallthrough)
+ 32997300:  423:	if ( p[i][k] ) puzzl[j+k] = false;
+branch  0 taken 11% (fallthrough)
+branch  1 taken 89%
+        -:  424:    }
+   596100:  425:    piececount[class[i]] = piececount[class[i]] + 1;
+   596100:  426:}
+        -:  427:
+function Trial called 601500 returned 100% blocks executed 100%
+   601500:  428:int Trial (j) int j; {
+        -:  429:    int i, k;
+   601500:  430:    kount = kount + 1;
+  8371500:  431:    for ( i = 0; i <= typemax; i++ ) {
+branch  0 taken 93%
+branch  1 taken 7% (fallthrough)
+  7775100:  432:	if ( piececount[class[i]] != 0 ) {
+branch  0 taken 59% (fallthrough)
+branch  1 taken 41%
+  4601400:  433:	    if ( Fit (i, j) ) {
+call    0 returned 100%
+branch  1 taken 13% (fallthrough)
+branch  2 taken 87%
+   601200:  434:		k = Place (i, j);
+call    0 returned 100%
+   601200:  435:		if ( Trial(k) || (k == 0) ) {
+call    0 returned 100%
+branch  1 taken 99% (fallthrough)
+branch  2 taken 1%
+branch  3 taken 1% (fallthrough)
+branch  4 taken 99%
+     5100:  436:		    return (true);
+        -:  437:		} else {
+   596100:  438:		    Remove (i, j);
+call    0 returned 100%
+        -:  439:		}
+        -:  440:	    }
+        -:  441:	}
+        -:  442:    }
+   596400:  443:    return (false);
+        -:  444:}
+        -:  445:
+function Puzzle called 1 returned 100% blocks executed 98%
+        1:  446:void Puzzle () {
+        -:  447:    int i, j, k, m, ii;
+      301:  448:    for (ii = 0; ii < 300; ++ii) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+        -:  449:
+   153900:  450:    for ( m = 0; m <= size; m++ )
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   153600:  451:	puzzl[m] = true;
+    37800:  452:    for( i = 1; i <= 5; i++ )for( j = 1; j <= 5; j++ )for( k = 1; k <= 5; k++ )
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+branch  2 taken 83%
+branch  3 taken 17% (fallthrough)
+branch  4 taken 83%
+branch  5 taken 17% (fallthrough)
+    37500:  453:	puzzl[i+d*(j+d*k)] = false;
+  1997100:  454:    for( i = 0; i <= typemax; i++ )for( m = 0; m<= size; m++ )
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+branch  2 taken 93%
+branch  3 taken 7% (fallthrough)
+  1996800:  455:	p[i][m] = false;
+     2700:  456:    for( i = 0; i <= 3; i++ )for( j = 0; j <= 1; j++ )for( k = 0; k <= 0; k++ )
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+branch  2 taken 67%
+branch  3 taken 33% (fallthrough)
+branch  4 taken 80%
+branch  5 taken 20% (fallthrough)
+     2400:  457:	p[0][i+d*(j+d*k)] = true;
+      300:  458:    class[0] = 0;
+      300:  459:    piecemax[0] = 3+d*1+d*d*0;
+     2700:  460:    for( i = 0; i <= 1; i++ )for( j = 0; j <= 0; j++ )for( k = 0; k <= 3; k++ )
+branch  0 taken 80%
+branch  1 taken 20% (fallthrough)
+branch  2 taken 50%
+branch  3 taken 50% (fallthrough)
+branch  4 taken 67%
+branch  5 taken 33% (fallthrough)
+     2400:  461:	p[1][i+d*(j+d*k)] = true;
+      300:  462:    class[1] = 0;
+      300:  463:    piecemax[1] = 1+d*0+d*d*3;
+     2700:  464:    for( i = 0; i <= 0; i++ )for( j = 0; j <= 3; j++ )for( k = 0; k <= 1; k++ )
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 80%
+branch  3 taken 20% (fallthrough)
+branch  4 taken 50%
+branch  5 taken 50% (fallthrough)
+     2400:  465:	p[2][i+d*(j+d*k)] = true;
+      300:  466:    class[2] = 0;
+      300:  467:    piecemax[2] = 0+d*3+d*d*1;
+     2700:  468:    for( i = 0; i <= 1; i++ )for( j = 0; j <= 3; j++ )for( k = 0; k <= 0; k++ )
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+branch  2 taken 80%
+branch  3 taken 20% (fallthrough)
+branch  4 taken 67%
+branch  5 taken 33% (fallthrough)
+     2400:  469:	p[3][i+d*(j+d*k)] = true;
+      300:  470:    class[3] = 0;
+      300:  471:    piecemax[3] = 1+d*3+d*d*0;
+     2700:  472:    for( i = 0; i <= 3; i++ )for( j = 0; j <= 0; j++ )for( k = 0; k <= 1; k++ )
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 50%
+branch  3 taken 50% (fallthrough)
+branch  4 taken 80%
+branch  5 taken 20% (fallthrough)
+     2400:  473:	p[4][i+d*(j+d*k)] = true;
+      300:  474:    class[4] = 0;
+      300:  475:    piecemax[4] = 3+d*0+d*d*1;
+     2700:  476:    for( i = 0; i <= 0; i++ )for( j = 0; j <= 1; j++ )for( k = 0; k <= 3; k++ )
+branch  0 taken 80%
+branch  1 taken 20% (fallthrough)
+branch  2 taken 67%
+branch  3 taken 33% (fallthrough)
+branch  4 taken 50%
+branch  5 taken 50% (fallthrough)
+     2400:  477:	p[5][i+d*(j+d*k)] = true;
+      300:  478:    class[5] = 0;
+      300:  479:    piecemax[5] = 0+d*1+d*d*3;
+     1200:  480:    for( i = 0; i <= 2; i++ )for( j = 0; j <= 0; j++ )for( k = 0; k <= 0; k++ )
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+branch  2 taken 50%
+branch  3 taken 50% (fallthrough)
+branch  4 taken 75%
+branch  5 taken 25% (fallthrough)
+      900:  481:	p[6][i+d*(j+d*k)] = true;
+      300:  482:    class[6] = 1;
+      300:  483:    piecemax[6] = 2+d*0+d*d*0;
+     1200:  484:    for( i = 0; i <= 0; i++ )for( j = 0; j <= 2; j++ )for( k = 0; k <= 0; k++ )
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+branch  2 taken 75%
+branch  3 taken 25% (fallthrough)
+branch  4 taken 50%
+branch  5 taken 50% (fallthrough)
+      900:  485:	p[7][i+d*(j+d*k)] = true;
+      300:  486:    class[7] = 1;
+      300:  487:    piecemax[7] = 0+d*2+d*d*0;
+     1200:  488:    for( i = 0; i <= 0; i++ )for( j = 0; j <= 0; j++ )for( k = 0; k <= 2; k++ )
+branch  0 taken 75%
+branch  1 taken 25% (fallthrough)
+branch  2 taken 50%
+branch  3 taken 50% (fallthrough)
+branch  4 taken 50%
+branch  5 taken 50% (fallthrough)
+      900:  489:	p[8][i+d*(j+d*k)] = true;
+      300:  490:    class[8] = 1;
+      300:  491:    piecemax[8] = 0+d*0+d*d*2;
+     1500:  492:    for( i = 0; i <= 1; i++ )for( j = 0; j <= 1; j++ )for( k = 0; k <= 0; k++ )
+branch  0 taken 50%
+branch  1 taken 50% (fallthrough)
+branch  2 taken 67%
+branch  3 taken 33% (fallthrough)
+branch  4 taken 67%
+branch  5 taken 33% (fallthrough)
+     1200:  493:	p[9][i+d*(j+d*k)] = true;
+      300:  494:    class[9] = 2;
+      300:  495:    piecemax[9] = 1+d*1+d*d*0;
+     1500:  496:    for( i = 0; i <= 1; i++ )for( j = 0; j <= 0; j++ )for( k = 0; k <= 1; k++ )
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 50%
+branch  3 taken 50% (fallthrough)
+branch  4 taken 67%
+branch  5 taken 33% (fallthrough)
+     1200:  497:	p[10][i+d*(j+d*k)] = true;
+      300:  498:    class[10] = 2;
+      300:  499:    piecemax[10] = 1+d*0+d*d*1;
+     1500:  500:    for( i = 0; i <= 0; i++ )for( j = 0; j <= 1; j++ )for( k = 0; k <= 1; k++ )
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 67%
+branch  3 taken 33% (fallthrough)
+branch  4 taken 50%
+branch  5 taken 50% (fallthrough)
+     1200:  501:	p[11][i+d*(j+d*k)] = true;
+      300:  502:    class[11] = 2;
+      300:  503:    piecemax[11] = 0+d*1+d*d*1;
+     2700:  504:    for( i = 0; i <= 1; i++ )for( j = 0; j <= 1; j++ )for( k = 0; k <= 1; k++ )
+branch  0 taken 67%
+branch  1 taken 33% (fallthrough)
+branch  2 taken 67%
+branch  3 taken 33% (fallthrough)
+branch  4 taken 67%
+branch  5 taken 33% (fallthrough)
+     2400:  505:	p[12][i+d*(j+d*k)] = true;
+      300:  506:    class[12] = 3;
+      300:  507:    piecemax[12] = 1+d*1+d*d*1;
+      300:  508:    piececount[0] = 13;
+      300:  509:    piececount[1] = 3;
+      300:  510:    piececount[2] = 1;
+      300:  511:    piececount[3] = 1;
+      300:  512:    m = 1+d*(1+d*1);
+      300:  513:    kount = 0;
+      300:  514:    if ( Fit(0, m) ) {
+call    0 returned 100%
+branch  1 taken 100% (fallthrough)
+branch  2 taken 0%
+      300:  515:	n = Place(0, m);
+call    0 returned 100%
+        -:  516:    } else {
+    #####:  517:	printf("Error1 in Puzzle\n");
+call    0 never executed
+        -:  518:    }
+      300:  519:    if ( ! Trial(n) ) {
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+    #####:  520:	printf ("Error2 in Puzzle.\n");
+call    0 never executed
+      300:  521:    } else if ( kount != 2005 ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  522:	printf ( "Error3 in Puzzle.\n");
+call    0 never executed
+        -:  523:    }
+        -:  524:    }
+        -:  525:
+        1:  526:}
+        -:  527:
+        -:  528:/* Sorts an array using quicksort */
+        -:  529:
+function Initarr called 1 returned 100% blocks executed 100%
+        1:  530:void Initarr() {
+        -:  531:    int i, temp;
+        1:  532:    Initrand();
+call    0 returned 100%
+        1:  533:    biggest = 0; littlest = 0;
+   300001:  534:    for ( i = 1; i <= sortelements; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   300000:  535:	temp = Rand();
+call    0 returned 100%
+   300000:  536:	sortlist[i] = temp - (temp/100000)*100000 - 50000;
+   300000:  537:	if ( sortlist[i] > biggest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        7:  538:	    biggest = sortlist[i];
+   299993:  539:	} else if ( sortlist[i] < littlest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        4:  540:	    littlest = sortlist[i];
+        -:  541:	}
+        -:  542:    }
+        1:  543:}
+        -:  544:
+        -:  545:    /* quicksort the array a from l to r */
+function Quicksort called 244308 returned 100% blocks executed 100%
+   244308:  546:void Quicksort( a,l,r) int a[], l, r; {
+        -:  547:    int i,j,x,w;
+        -:  548:
+   244308:  549:    i=l; j=r;
+   244308:  550:    x=a[(l+r) / 2];
+        -:  551:    do {
+  1472659:  552:	while ( a[i]<x ) i = i+1;
+branch  0 taken 59%
+branch  1 taken 41% (fallthrough)
+  1472659:  553:	while ( x<a[j] ) j = j-1;
+branch  0 taken 59%
+branch  1 taken 41% (fallthrough)
+  1472659:  554:	if ( i<=j ) {
+branch  0 taken 97% (fallthrough)
+branch  1 taken 3%
+  1428426:  555:	    w = a[i];
+  1428426:  556:	    a[i] = a[j];
+  1428426:  557:	    a[j] = w;
+  1428426:  558:	    i = i+1;    j= j-1;
+        -:  559:	}
+  1472659:  560:    } while ( i<=j );
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+   244308:  561:    if ( l<j ) Quicksort(a,l,j);
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+call    2 returned 100%
+   244308:  562:    if ( i<r ) Quicksort(a,i,r);
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+call    2 returned 100%
+   244308:  563:}
+        -:  564:
+        -:  565:
+function Quick called 1 returned 100% blocks executed 83%
+        1:  566:void Quick () {
+        1:  567:    Initarr();
+call    0 returned 100%
+        1:  568:    Quicksort(sortlist,1,sortelements);
+call    0 returned 100%
+        1:  569:    if ( (sortlist[1] != littlest) || (sortlist[sortelements] != biggest) ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  570:	printf ( " Error in Quick.\n");
+call    0 never executed
+        -:  571:    }
+        1:  572:}
+        -:  573:
+        -:  574:/* Sorts an array using treesort */
+        -:  575:
+function tInitarr called 1 returned 100% blocks executed 100%
+        1:  576:void tInitarr() {
+        -:  577:    int i, temp;
+        1:  578:    Initrand();
+call    0 returned 100%
+        1:  579:    biggest = 0; littlest = 0;
+   300001:  580:    for ( i = 1; i <= sortelements; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   300000:  581:	temp = Rand();
+call    0 returned 100%
+   300000:  582:	sortlist[i] = temp - (temp/100000)*100000 - 50000;
+   300000:  583:	if ( sortlist[i] > biggest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        7:  584:	    biggest = sortlist[i];
+   299993:  585:	} else if ( sortlist[i] < littlest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        4:  586:	    littlest = sortlist[i];
+        -:  587:	}
+        -:  588:    }
+        1:  589:}
+        -:  590:
+function CreateNode called 65535 returned 100% blocks executed 100%
+    65535:  591:void CreateNode (t,n) struct node **t; int n; {
+    65535:  592:    *t = (struct node *)malloc(sizeof(struct node)); 
+    65535:  593:    (*t)->left = nil; (*t)->right = nil;
+    65535:  594:    (*t)->val = n;
+    65535:  595:}
+        -:  596:
+        -:  597:    /* insert n into tree */
+function Insert called 5969660 returned 100% blocks executed 100%
+  5969660:  598:void Insert(n, t) int n; struct node *t; {
+  5969660:  599:    if ( n > t->val ) {
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+  3008286:  600:	if ( t->left == nil ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+    32769:  601:	    CreateNode(&t->left,n);
+call    0 returned 100%
+        -:  602:	} else {
+  2975517:  603:	    Insert(n,t->left);
+call    0 returned 100%
+        -:  604:	}
+  2961374:  605:    } else if ( n < t->val ) {
+branch  0 taken 92% (fallthrough)
+branch  1 taken 8%
+  2726910:  606:	if ( t->right == nil ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+    32766:  607:	    CreateNode(&t->right,n);
+call    0 returned 100%
+        -:  608:	} else {
+  2694144:  609:	    Insert(n,t->right);
+call    0 returned 100%
+        -:  610:	}
+        -:  611:    }
+  5969660:  612:}
+        -:  613:
+        -:  614:    /* check by inorder traversal */
+function Checktree called 1 returned 100% blocks executed 36%
+        1:  615:int Checktree(p) struct node *p; {
+        -:  616:    int result;
+        1:  617:    result = true;
+        1:  618:    if ( p->left != nil ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        1:  619:        if ( p->left->val <= p->val ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  620:	    result=false;
+        -:  621:	}
+        -:  622:    } else {
+    #####:  623:	result = Checktree(p->left) && result;
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+        -:  624:    }
+        1:  625:    if ( p->right != nil ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+        1:  626:        if ( p->right->val >= p->val ) {
+branch  0 taken 0% (fallthrough)
+branch  1 taken 100%
+    #####:  627:	    result = false;
+        -:  628:	}
+        -:  629:    } else {
+    #####:  630:	result = Checktree(p->right) && result;
+call    0 never executed
+branch  1 never executed
+branch  2 never executed
+branch  3 never executed
+branch  4 never executed
+        -:  631:    }
+        1:  632:    return( result);
+        -:  633:}
+        -:  634:
+function Trees called 1 returned 100% blocks executed 89%
+        1:  635:void Trees() {
+        -:  636:    int i;
+        1:  637:    tInitarr();
+call    0 returned 100%
+        1:  638:    tree = (struct node *)malloc(sizeof(struct node)); 
+        1:  639:    tree->left = nil; tree->right=nil; tree->val=sortlist[1];
+        1:  640:    for ( i = 2; i <= sortelements; i++ ) Insert(sortlist[i],tree);
+call    0 returned 100%
+branch  1 taken 99%
+branch  2 taken 1% (fallthrough)
+        1:  641:    if ( ! Checktree(tree) ) printf ( " Error in Tree.\n");
+call    0 returned 100%
+branch  1 taken 0% (fallthrough)
+branch  2 taken 100%
+call    3 never executed
+        1:  642:}
+        -:  643:
+        -:  644:
+        -:  645:/* Sorts an array using bubblesort */
+        -:  646:
+function bInitarr called 1 returned 100% blocks executed 100%
+        1:  647:void bInitarr() {
+        -:  648:    int i, temp;
+        1:  649:    Initrand();
+call    0 returned 100%
+        1:  650:    biggest = 0; littlest = 0;
+    10001:  651:    for ( i = 1; i <= srtelements; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+    10000:  652:	temp = Rand();
+call    0 returned 100%
+    10000:  653:	sortlist[i] = temp - (temp/100000)*100000 - 50000;
+    10000:  654:	if ( sortlist[i] > biggest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        6:  655:	    biggest = sortlist[i];
+     9994:  656:	} else if ( sortlist[i] < littlest ) {
+branch  0 taken 1% (fallthrough)
+branch  1 taken 99%
+        4:  657:	    littlest = sortlist[i];
+        -:  658:	}
+        -:  659:    }
+        1:  660:}
+        -:  661:
+function Bubble called 1 returned 100% blocks executed 92%
+        1:  662:void Bubble() {
+        -:  663:    int i, j;
+        1:  664:    bInitarr();
+call    0 returned 100%
+        1:  665:    top=srtelements;
+        -:  666:
+    10001:  667:    while ( top>1 ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+     9999:  668:	i=1;
+ 50014998:  669:	while ( i<top ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+ 49995000:  670:	    if ( sortlist[i] > sortlist[i+1] ) {
+branch  0 taken 50% (fallthrough)
+branch  1 taken 50%
+ 25159018:  671:		j = sortlist[i];
+ 25159018:  672:		sortlist[i] = sortlist[i+1];
+ 25159018:  673:		sortlist[i+1] = j;
+        -:  674:	    }
+ 49995000:  675:	    i=i+1;
+        -:  676:	}
+     9999:  677:	top=top-1;
+        -:  678:    }
+        1:  679:    if ( (sortlist[1] != littlest) || (sortlist[srtelements] != biggest) ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+branch  2 taken 0% (fallthrough)
+branch  3 taken 100%
+    #####:  680:	printf ( "Error3 in Bubble.\n");
+call    0 never executed
+        -:  681:    }
+        1:  682:}
+        -:  683:
+        -:  684:
+        -:  685:    /* computes cos of x (x in radians) by an expansion */
+function Cos called 25000 returned 100% blocks executed 100%
+    25000:  686:float Cos (x) float x; {
+        -:  687:    int i, factor;
+        -:  688:    float    result,power;
+        -:  689:
+    25000:  690:    result = 1.0; factor = 1;  power = x;
+   250000:  691:    for ( i = 2; i <= 10; i++ ) {
+branch  0 taken 90%
+branch  1 taken 10% (fallthrough)
+   225000:  692:	factor = factor * i;  power = power*x;
+   225000:  693:        if ( (i & 1) == 0 )  {
+branch  0 taken 56% (fallthrough)
+branch  1 taken 44%
+   125000:  694:	    if ( (i & 3) == 0 ) {
+branch  0 taken 40% (fallthrough)
+branch  1 taken 60%
+    50000:  695:		result = result + power/factor;
+        -:  696:	    } else {
+    75000:  697:		result = result - power/factor;
+        -:  698:	    }
+        -:  699:	}
+        -:  700:    }
+    25000:  701:    return (result);
+        -:  702:}
+        -:  703:
+function Min0 called 6000 returned 100% blocks executed 75%
+     6000:  704:int Min0( arg1, arg2) int arg1, arg2; {
+     6000:  705:    if ( arg1 < arg2 ) {
+branch  0 taken 100% (fallthrough)
+branch  1 taken 0%
+     6000:  706:	return (arg1);
+        -:  707:    } else {
+    #####:  708:	return (arg2);
+        -:  709:    }
+        -:  710:}
+        -:  711:
+function Printcomplex called 0 returned 0% blocks executed 0%
+    #####:  712:void Printcomplex(  arg1, arg2, zarray, start, finish, increment)
+        -:  713:    int arg1, arg2, start, finish, increment;
+        -:  714:    struct complex zarray[];
+        -:  715:{
+        -:  716:    int i;
+    #####:  717:    printf("\n");
+call    0 never executed
+        -:  718:
+    #####:  719:    i = start;
+        -:  720:    do {
+    #####:  721:	printf("  %15.3e%15.3e",zarray[i].rp,zarray[i].ip);
+call    0 never executed
+    #####:  722:	i = i + increment;
+    #####:  723:	printf("  %15.3e%15.3e",zarray[i].rp,zarray[i].ip);
+call    0 never executed
+    #####:  724:	printf("\n");
+call    0 never executed
+    #####:  725:	i = i + increment;
+    #####:  726:    } while ( i <= finish );
+branch  0 never executed
+branch  1 never executed
+        -:  727:
+    #####:  728:}
+        -:  729:
+function Uniform11 called 512000 returned 100% blocks executed 100%
+   512000:  730:void Uniform11(iy, yfl) int *iy; float *yfl; {
+   512000:  731:    *iy = (4855* *iy + 1731) & 8191;
+   512000:  732:    *yfl = *iy/8192.0;
+   512000:  733:}
+        -:  734:
+function Exptab called 1000 returned 100% blocks executed 100%
+     1000:  735:void Exptab(n, e) int n; struct complex e[]; {
+        -:  736:    float theta, divisor, h[26];
+        -:  737:    int i, j, k, l, m;
+        -:  738:
+     1000:  739:    theta = 3.1415926536;
+     1000:  740:    divisor = 4.0;
+    26000:  741:    for ( i=1; i <= 25; i++ ) {
+branch  0 taken 96%
+branch  1 taken 4% (fallthrough)
+    25000:  742:	h[i] = 1/(2*Cos( theta/divisor ));
+call    0 returned 100%
+    25000:  743:	divisor = divisor + divisor;
+        -:  744:    }
+        -:  745:
+     1000:  746:    m = n / 2;
+     1000:  747:    l = m / 2;
+     1000:  748:    j = 1;
+     1000:  749:    e[1].rp = 1.0;
+     1000:  750:    e[1].ip = 0.0;
+     1000:  751:    e[l+1].rp = 0.0;
+     1000:  752:    e[l+1].ip = 1.0;
+     1000:  753:    e[m+1].rp = -1.0;
+     1000:  754:    e[m+1].ip = 0.0;
+        -:  755:
+        -:  756:    do {
+     6000:  757:	i = l / 2;
+     6000:  758:	k = i;
+        -:  759:
+        -:  760:	do {
+   126000:  761:	    e[k+1].rp = h[j]*(e[k+i+1].rp+e[k-i+1].rp);
+   126000:  762:	    e[k+1].ip = h[j]*(e[k+i+1].ip+e[k-i+1].ip);
+   126000:  763:	    k = k+l;
+   126000:  764:	} while ( k <= m );
+branch  0 taken 95%
+branch  1 taken 5% (fallthrough)
+        -:  765:
+     6000:  766:	j = Min0( j+1, 25);
+call    0 returned 100%
+     6000:  767:	l = i;
+     6000:  768:    } while ( l > 1 );
+branch  0 taken 83%
+branch  1 taken 17% (fallthrough)
+        -:  769:
+     1000:  770:}
+        -:  771:
+function Fft called 20000 returned 100% blocks executed 100%
+    20000:  772:void Fft( n, z, w, e, sqrinv)
+        -:  773:    int n; struct complex z[], w[]; struct complex e[]; float sqrinv;
+        -:  774:{
+        -:  775:    int i, j, k, l, m, index;
+    20000:  776:    m = n / 2;
+    20000:  777:    l = 1;
+        -:  778:
+        -:  779:    do {
+   160000:  780:	k = 0;
+   160000:  781:	j = l;
+   160000:  782:	i = 1;
+        -:  783:	do {
+        -:  784:	    do {
+ 20480000:  785:		w[i+k].rp = z[i].rp+z[m+i].rp;
+ 20480000:  786:		w[i+k].ip = z[i].ip+z[m+i].ip;
+ 61440000:  787:		w[i+j].rp = e[k+1].rp*(z[i].rp-z[i+m].rp)
+ 40960000:  788:		-e[k+1].ip*(z[i].ip-z[i+m].ip);
+ 61440000:  789:		w[i+j].ip = e[k+1].rp*(z[i].ip-z[i+m].ip)
+ 40960000:  790:		+e[k+1].ip*(z[i].rp-z[i+m].rp);
+ 20480000:  791:		i = i+1;
+ 20480000:  792:	    } while ( i <= j );
+branch  0 taken 75%
+branch  1 taken 25% (fallthrough)
+  5100000:  793:	    k = j;
+  5100000:  794:	    j = k+l;
+  5100000:  795:	} while ( j <= m );
+branch  0 taken 97%
+branch  1 taken 3% (fallthrough)
+   160000:  796:	index = 1;
+        -:  797:	do {
+ 40960000:  798:	    z[index] = w[index];
+ 40960000:  799:	    index = index+1;
+ 40960000:  800:	} while ( index <= n );
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   160000:  801:	l = l+l;
+   160000:  802:    } while ( l <= m );
+branch  0 taken 88%
+branch  1 taken 13% (fallthrough)
+        -:  803:
+  5140000:  804:    for ( i = 1; i <= n; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+  5120000:  805:	z[i].rp = sqrinv*z[i].rp;
+  5120000:  806:	z[i].ip = -sqrinv*z[i].ip;
+        -:  807:    }
+        -:  808:
+    20000:  809:}
+        -:  810:
+function Oscar called 1 returned 100% blocks executed 100%
+        1:  811:void Oscar() {
+        -:  812:    int i, j;
+     1001:  813:    for (j = 0; j < 1000; ++j) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+     1000:  814:    Exptab(fftsize,e);
+call    0 returned 100%
+     1000:  815:    seed = 5767;
+   257000:  816:    for ( i = 1; i <= fftsize; i++ ) {
+branch  0 taken 99%
+branch  1 taken 1% (fallthrough)
+   256000:  817:	Uniform11( &seed, &zr );
+call    0 returned 100%
+   256000:  818:	Uniform11( &seed, &zi );
+call    0 returned 100%
+   256000:  819:	z[i].rp = 20.0*zr - 10.0;
+   256000:  820:	z[i].ip = 20.0*zi - 10.0;
+        -:  821:    }
+        -:  822:
+    21000:  823:    for ( i = 1; i <= 20; i++ ) {
+branch  0 taken 95%
+branch  1 taken 5% (fallthrough)
+    20000:  824:       Fft(fftsize,z,w,e,0.0625);
+call    0 returned 100%
+        -:  825:       /* Printcomplex( 6, 99, z, 1, 256, 17 ); */
+        -:  826:    }
+        -:  827:    }
+        1:  828:}
+        -:  829:
+function main called 1 returned 100% blocks executed 100%
+        1:  830:int main() {
+        -:  831:int i;
+        1:  832:fixed = 0.0;	floated = 0.0;
+        -:  833:
+        1:  834:init_timebase();
+call    0 returned 100%
+        -:  835:
+        1:  836:printf("    Perm"); timer = Getclock(); Perm();   xtimes[1] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  837:fixed = fixed + permbase*xtimes[1];
+        1:  838:floated = floated + permbase*xtimes[1];
+        1:  839:printf("  Towers"); timer = Getclock(); Towers(); xtimes[2] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  840:fixed = fixed + towersbase*xtimes[2];
+        1:  841:floated = floated + towersbase*xtimes[2];
+        1:  842:printf("  Queens"); timer = Getclock(); Queens(); xtimes[3] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  843:fixed = fixed + queensbase*xtimes[3];
+        1:  844:floated = floated + queensbase*xtimes[3];
+        1:  845:printf("   Intmm"); timer = Getclock(); Intmm();  xtimes[4] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  846:fixed = fixed + intmmbase*xtimes[4];
+        1:  847:floated = floated + intmmbase*xtimes[4];
+        1:  848:printf("      Mm"); timer = Getclock(); Mm();     xtimes[5] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  849:fixed = fixed + mmbase*xtimes[5];
+        1:  850:floated = floated + fpmmbase*xtimes[5];
+        1:  851:printf("  Puzzle"); timer = Getclock(); Puzzle(); xtimes[6] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  852:fixed = fixed + puzzlebase*xtimes[6];
+        1:  853:floated = floated + puzzlebase*xtimes[6];
+        1:  854:printf("   Quick"); timer = Getclock(); Quick();  xtimes[7] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  855:fixed = fixed + quickbase*xtimes[7];
+        1:  856:floated = floated + quickbase*xtimes[7];
+        1:  857:printf("  Bubble"); timer = Getclock(); Bubble(); xtimes[8] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  858:fixed = fixed + bubblebase*xtimes[8];
+        1:  859:floated = floated + bubblebase*xtimes[8];
+        1:  860:printf("    Tree"); timer = Getclock(); Trees(); xtimes[9] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  861:fixed = fixed + treebase*xtimes[9];
+        1:  862:floated = floated + treebase*xtimes[9];
+        1:  863:printf("     FFT"); timer = Getclock(); Oscar(); xtimes[10] = Getclock()-timer;
+call    0 returned 100%
+call    1 returned 100%
+call    2 returned 100%
+call    3 returned 100%
+        1:  864:fixed = fixed + fftbase*xtimes[10];
+        1:  865:floated = floated + fpfftbase*xtimes[10];
+        1:  866:printf("\n");
+call    0 returned 100%
+        1:  867:for ( i = 1; i <= 10; i++ ) printf("%8.0lf", xtimes[i]);
+call    0 returned 100%
+branch  1 taken 91%
+branch  2 taken 9% (fallthrough)
+        1:  868:printf("\n");
+call    0 returned 100%
+        -:  869:
+        1:  870:	return 0;
+        -:  871:}
