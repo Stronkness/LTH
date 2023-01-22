@@ -65,7 +65,7 @@ public class Regul extends Thread {
 	
 	// Class definition for internal ParameterMonitor
 	private class ParameterMonitor {
-		private double K = 1.0;
+		private double K = 1.0; // Gain
 		
 		// Synchronized access methods. K should always be non-negative.
 		public synchronized double getK(){
