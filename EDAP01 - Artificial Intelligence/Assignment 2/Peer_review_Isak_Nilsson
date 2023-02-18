@@ -1,0 +1,8 @@
+This implementation made by Isak Nilsson (is7416ni-s) is a good example of short and consice code. His code doesn't leave any errors and works as intended from what I understand.
+
+By running the GUI simulation I can see that his hit-rate in a 8x8 grid gives about 25% which is what we are looking for. His readings seem valid and doesn't give off distances further away from the second ring (when it's not nothing) and gives "nothing" reasonably often. The implementation is using the distribution and updates the values in the viewer which shows a proper and correct implementation.
+
+The code consist of valuable comments which makes it easier for me to understand the code. When I see his implementation of the forward filtering in HMMFilter class I start to wonder if my implementation of it could be shortened or made better. The RobotSim class have good use of helper methods and motivation of what happends.
+
+I notice two differences in our codes. First, he doesn't check only for readings withing two squares as me which could affect the performance of the implementation.
+Secondly, the Manhattan Distance calculation. If I'm not mistaken you do unnecessary calculations for the Manhattan Distance. Can't you just use tsX and tsY in the calculation as you already have the trueState? Also in Line 122 you send in a position to get the state of the position, but then you send in the returning state to get the position which you originally had if I'm not mistaken.
