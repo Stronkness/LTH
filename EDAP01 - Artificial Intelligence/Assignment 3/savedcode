@@ -1,0 +1,41 @@
+predict(X,w):
+# Write your code here
+def predict(X, w):
+    y_hat = []
+    for i in range(len(X)):
+        prob = 0
+        for j in range(len(X[i])):
+            prob += X[i][j]*w[j]
+        if prob >= 0: # As stated in Norvigs book, P.723 (Third edition)
+            y_hat.append(1)
+        else:
+            y_hat.append(0)
+    return y_hat
+
+fit(X, y):
+# Write your code here
+# Write your code here
+import random
+import vector
+def fit_stoch(X, y,
+              epochs=1000,
+              max_misclassified=0,
+              verbose=True):
+    w = np.ones((len(X[0]))) # Length of vector, equal to rows
+    random.seed(0)
+    idx = list(range(len(X)))
+    for epoch in range(epochs):
+        random.shuffle(idx)
+        total_loss = 0
+        alpha = 1000/(1000 + epoch) # Formula in book
+        for i in idx:
+            error = (predict([X[i]], w)[0] - y[i])
+            total_loss += abs(error)
+            gradient = vector.mul(error, X[i])
+            w = vector.add(w, vector.mul(alpha, gradient))
+            
+        if total_loss <= max_misclassified:
+            break        
+    if verbose:
+        print("Epoch", epoch)
+    return w
