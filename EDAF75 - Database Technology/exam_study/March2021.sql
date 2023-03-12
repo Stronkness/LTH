@@ -112,3 +112,11 @@ SELECT sum(size * work_time)
 FROM areas
 JOIN area_types
 USING (area_type)
+
+-- 3e
+SELECT A,B,C,D,E,F,G,H
+FROM R2a
+JOIN R2b
+USING (E)
+JOIN R1
+USING (H)
