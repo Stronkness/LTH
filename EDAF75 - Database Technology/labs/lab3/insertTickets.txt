@@ -1,0 +1,4 @@
+INSERT 
+INTO ticket(screening_id, ticket_holder)
+VALUES ("2307bb15ba0d0174391ed82d1859a04b", "alice")
+RETURNING id;
