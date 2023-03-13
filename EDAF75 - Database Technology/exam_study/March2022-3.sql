@@ -1,0 +1,19 @@
+-- 1b
+CREATE TABLE (
+
+);
+CREATE TABLE (
+
+);
+CREATE TABLE (
+
+);
+CREATE TABLE (
+
+);
+CREATE TABLE (
+
+);
+CREATE TABLE (
+
+);
