@@ -1,0 +1,58 @@
+head	1.2;
+access;
+symbols
+	start:1.1.1.1 Klein:1.1.1;
+locks; strict;
+comment	@# @;
+
+
+1.2
+date	2023.11.03.10.22.06;	author microcookies;	state dead;
+branches;
+next	1.1;
+commitid	1006544C9C06FF9F7E9;
+
+1.1
+date	2023.11.03.09.46.19;	author microcookies;	state Exp;
+branches
+	1.1.1.1;
+next	;
+commitid	1006544C1664697742A;
+
+1.1.1.1
+date	2023.11.03.09.46.19;	author microcookies;	state Exp;
+branches;
+next	;
+commitid	1006544C1664697742A;
+
+
+desc
+@@
+
+
+1.2
+log
+@hobbes changes:
+@
+text
+@<body>
+This package implements a binary search tree. The tree can hold nodes where
+each node has an integer value.
+</body>
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@@
+
+
+1.1.1.1
+log
+@Clavin starting
+@
+text
+@@

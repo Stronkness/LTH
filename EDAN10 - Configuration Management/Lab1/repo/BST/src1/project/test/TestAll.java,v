@@ -1,0 +1,64 @@
+head     1.1;
+branch   1.1.1;
+access   ;
+symbols  start:1.1.1.1 Klein:1.1.1;
+locks    ; strict;
+comment  @# @;
+
+
+1.1
+date     2023.11.03.09.46.19;  author microcookies;  state Exp;
+branches 1.1.1.1;
+next     ;
+commitid        1006544C1664697742A;
+
+1.1.1.1
+date     2023.11.03.09.46.19;  author microcookies;  state Exp;
+branches ;
+next     ;
+commitid        1006544C1664697742A;
+
+
+desc
+@@
+
+
+
+1.1
+log
+@Initial revision
+@
+text
+@package test;
+
+import junit.framework.Test;
+import junit.framework.TestCase;
+import junit.framework.TestSuite;
+
+/**
+ * Unit test all classes in the tree package and all its subpackages.
+ */
+public class TestAll extends TestCase {
+  public TestAll(String name) {
+    super(name);
+  }
+  public static Test suite() {
+    TestSuite suite = new TestSuite();
+    suite.addTestSuite(test.TestMyTree.class);
+    suite.addTestSuite(test.TestMyNode.class);
+    return suite;
+  }
+  public static void main(String[] args) {
+    String[] testCaseName = { TestAll.class.getName() };
+    junit.swingui.TestRunner.main(testCaseName);
+  }
+}
+@
+
+
+1.1.1.1
+log
+@Clavin starting
+@
+text
+@@

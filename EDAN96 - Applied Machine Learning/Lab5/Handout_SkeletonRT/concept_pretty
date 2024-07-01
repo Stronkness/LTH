@@ -1,0 +1,12 @@
+digraph Tree {
+node [shape=box, style="rounded", color="black", fontname="helvetica"] ;
+graph [ranksep=equally, splines=polyline] ;
+edge [fontname="helvetica"] ;
+
+	0 [label="
+id: 0
+splitValue: -
+mse: 0.0
+samples: 4
+avgValue: 0.0"]
+}

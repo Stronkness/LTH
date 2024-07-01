@@ -1,0 +1,331 @@
+head	1.10;
+access;
+symbols
+	release:1.10.0.2
+	release2:1.9
+	HobRel1:1.9
+	release1:1.9
+	start:1.1.1.1
+	Klein:1.1.1;
+locks; strict;
+comment	@# @;
+
+
+1.10
+date	2023.11.03.13.20.14;	author microcookies;	state Exp;
+branches;
+next	1.9;
+commitid	1006544F389A71C29EC;
+
+1.9
+date	2023.11.03.12.57.49;	author microcookies;	state Exp;
+branches;
+next	1.8;
+commitid	1006544EE46A58D072D;
+
+1.8
+date	2023.11.03.12.56.35;	author microcookies;	state Exp;
+branches;
+next	1.7;
+commitid	1006544EE00A57088A2;
+
+1.7
+date	2023.11.03.12.42.08;	author microcookies;	state Exp;
+branches;
+next	1.6;
+commitid	1006544EA9BA4519AFA;
+
+1.6
+date	2023.11.03.12.40.51;	author microcookies;	state Exp;
+branches;
+next	1.5;
+commitid	1006544EA4EA34D6AF1;
+
+1.5
+date	2023.11.03.12.39.30;	author microcookies;	state Exp;
+branches;
+next	1.4;
+commitid	1006544E9FCA1E51818;
+
+1.4
+date	2023.11.03.12.36.12;	author microcookies;	state Exp;
+branches;
+next	1.3;
+commitid	1006544E9299DFDF53E;
+
+1.3
+date	2023.11.03.12.29.08;	author microcookies;	state Exp;
+branches;
+next	1.2;
+commitid	1006544E78C9001E24C;
+
+1.2
+date	2023.11.03.10.04.23;	author microcookies;	state Exp;
+branches;
+next	1.1;
+commitid	1006544C59D562D9B5D;
+
+1.1
+date	2023.11.03.09.46.19;	author microcookies;	state Exp;
+branches
+	1.1.1.1;
+next	;
+commitid	1006544C1664697742A;
+
+1.1.1.1
+date	2023.11.03.09.46.19;	author microcookies;	state Exp;
+branches;
+next	;
+commitid	1006544C1664697742A;
+
+
+desc
+@@
+
+
+1.10
+log
+@C23 prepp
+@
+text
+@package tree;
+//waz popping
+/**
+ * This is a node (or is it???) in a binary search tree. The node holds an
+ * integer value. comment commento
+ *
+ * @@author Torbjorn Ekman
+ * @@see MyTree
+ */
+public class MyNode {
+  private static String cvsID=”$Id: MyNode.java,v 1.2 2023/11/03 10:04:23
+  microcookies Exp $”;
+  private MyNode left;
+  private MyNode right;
+  private int value;
+
+  /**
+   * Class constructor (hehe) initializing this node's value.
+   * 
+   * @@param value The value of this node.
+   */
+  public MyNode(int value) {
+    this.value = value;
+  }
+
+  /**
+   * Gets the value of this node.
+   *
+   * @@return The current value of this node.
+   */
+  public int getValue() {
+    return value;
+  }
+
+  /**
+   * Sets the vlaue of this node.
+   *
+   * @@param value The newgbvcxgdjdfvfjds value of this node.
+   */
+  public void setValue(int value) {
+    this.value = value;
+  }
+
+  /**
+   * Gets the right child of this node.
+   *
+   * @@return The current right child of this node.
+   */
+  public MyNode getRightChild() {
+    return right;
+  }
+
+  /**
+   * Sets the right child of this node.
+   *
+   * @@param right The new right child of this node.
+   */
+  public void setRightChild(MyNode right) {
+    this.right = right;
+  }
+
+  /**
+   * Gets the left child of this node.
+   *
+   * @@return The current left child of this node.
+   */
+  public MyNode getLeftChild() {
+    return left;
+  }
+
+  /**
+   * Sets the left child of this node.
+   *
+   * @@param left The new left child of this node.
+   */
+  public void setLeftChild(MyNode left) {
+    this.left = left;
+  }
+
+  /**
+   * Calculate the size this subtree. Recursively calculate the size of the
+   * subtree in which this node is the root.
+   *
+   * @@return The size of the subtree.
+   */
+  public int calcSize() {
+    int cnt = 1;
+    if (left != null) {
+      cnt += left.calcSize();
+    }
+    if (right != null) {
+      cnt += right.calcSize();
+    }
+    return cnt;
+  }
+}
+
+
+// comment here at the end, edited by Hobbe
+@
+
+
+1.9
+log
+@oh no scary
+@
+text
+@d98 1
+a98 3
+<<<<<<< MyNode.java
+// commentat the end
+=======
+a99 1
+>>>>>>> 1.8
+@
+
+
+1.8
+log
+@vdifdfjkydeuhsregyiredk
+@
+text
+@d98 3
+d102 1
+@
+
+
+1.7
+log
+@commento
+@
+text
+@d2 1
+a2 1
+
+d98 1
+a98 1
+// comment here at the end
+@
+
+
+1.6
+log
+@apple tree?
+@
+text
+@d38 1
+a38 1
+   * @@param value The new value of this node.
+@
+
+
+1.5
+log
+@add spicy comment
+@
+text
+@d5 1
+a5 1
+ * integer value.
+@
+
+
+1.4
+log
+@upload comment
+@
+text
+@d97 2
+@
+
+
+1.3
+log
+@edit mynode bror
+@
+text
+@d18 1
+a18 1
+   * Class constructor initializing this node's value.
+@
+
+
+1.2
+log
+@Edit MyNode
+@
+text
+@d4 2
+a5 1
+ * This is a node in a binary search tree. The node holds an integer value.
+d11 2
+a12 2
+  private static String cvsID=”$Id$”;
+  private MyNode father;
+a44 18
+   * Gets the father of this node.
+   *
+   * @@return The current father of this node.
+   */
+  public MyNode getFather() {
+    return father;
+  }
+
+  /**
+   * Sets the father of this node.
+   *
+   * @@param father The new father of this node.
+   */
+  public void setFather(MyNode father) {
+    this.father = father;
+  }
+
+  /**
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d10 1
+d105 1
+a105 1
+    if(left != null) {
+d108 1
+a108 1
+    if(right != null) {
+d113 1
+a113 1
+} 
+@
+
+
+1.1.1.1
+log
+@Clavin starting
+@
+text
+@@
